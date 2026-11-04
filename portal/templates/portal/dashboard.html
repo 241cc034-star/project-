@@ -1,0 +1,31 @@
+{% extends 'portal/base.html' %}
+
+{% block content %}
+<h2>Student Dashboard</h2>
+
+<p>Welcome, {{ request.user.username }}!</p>
+
+<a href="{% url 'upload' %}">Upload Research Paper</a>
+
+<h3>My Research Papers</h3>
+
+{% for paper in papers %}
+    <p>
+        {{ paper.title }} -
+        <a href="{{ paper.file.url }}">View Paper</a>
+    </p>
+
+    {% for review in paper.review_set.all %}
+        <p>Reviewer Feedback: {{ review.feedback }}</p>
+    {% empty %}
+        <p>Feedback not received yet.</p>
+    {% endfor %}
+{% empty %}
+    <p>No papers uploaded yet.</p>
+{% endfor %}
+
+<form method="POST" action="{% url 'logout' %}">
+    {% csrf_token %}
+    <button type="submit">Logout</button>
+</form>
+{% endblock %}

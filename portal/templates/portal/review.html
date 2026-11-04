@@ -1,0 +1,19 @@
+{% extends 'portal/base.html' %}
+
+{% block content %}
+<h2>Reviewer Feedback</h2>
+
+<h3>{{ paper.title }}</h3>
+<p>{{ paper.abstract }}</p>
+
+<a href="{{ paper.file.url }}">Download Research Paper</a>
+
+<form method="POST">
+    {% csrf_token %}
+    <textarea name="feedback" placeholder="Enter your feedback"
+              required></textarea><br><br>
+    <button type="submit">Submit Feedback</button>
+</form>
+
+<a href="{% url 'reviewer_dashboard' %}">Back</a>
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends 'portal/base.html' %}
+
+{% block content %}
+<h2>Student Registration</h2>
+
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Register</button>
+</form>
+
+<a href="{% url 'login' %}">Already have an account? Login</a>
+{% endblock %}
