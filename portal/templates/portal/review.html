@@ -1,19 +1,82 @@
+
 {% extends 'portal/base.html' %}
 
 {% block content %}
-<h2>Reviewer Feedback</h2>
+<style>
+.review-container {
+    max-width: 700px;
+    margin: 30px auto;
+    padding: 30px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+.review-container h2 {
+    color: #102a56;
+    margin-bottom: 20px;
+}
+.review-container label {
+    display: block;
+    font-weight: bold;
+    margin: 18px 0 8px;
+}
+.review-container textarea,
+.review-container select {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+}
+.review-container textarea {
+    min-height: 130px;
+}
+.review-container button {
+    margin-top: 20px;
+    padding: 12px 22px;
+    background: #102a56;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+</style>
 
-<h3>{{ paper.title }}</h3>
-<p>{{ paper.abstract }}</p>
+<div class="review-container">
+    <h2>Reviewer Feedback</h2>
 
-<a href="{{ paper.file.url }}">Download Research Paper</a>
+    <h3>{{ paper.title }}</h3>
+    <p>{{ paper.abstract }}</p>
 
-<form method="POST">
-    {% csrf_token %}
-    <textarea name="feedback" placeholder="Enter your feedback"
-              required></textarea><br><br>
-    <button type="submit">Submit Feedback</button>
-</form>
+    <p>
+        <a href="{{ paper.paper_file.url }}" target="_blank">
+            Download Research Paper
+        </a>
+    </p>
 
-<a href="{% url 'reviewer_dashboard' %}">Back</a>
+    <form method="POST">
+        {% csrf_token %}
+
+        <label for="reviewer_feedback">Enter Your Feedback</label>
+        <textarea
+            id="reviewer_feedback"
+            name="reviewer_feedback"
+            placeholder="Enter your feedback"
+            required>{{ paper.reviewer_feedback }}</textarea>
+
+        <label for="status">Select Paper Status</label>
+        <select id="status" name="status" required>
+            <option value="Pending">Pending</option>
+            <option value="Approved">Approved</option>
+            <option value="Rejected">Rejected</option>
+        </select>
+
+        <button type="submit">Submit Feedback</button>
+    </form>
+
+    <br>
+    <a href="{% url 'reviewer_dashboard' %}">
+        Back to Reviewer Dashboard
+    </a>
+</div>
 {% endblock %}

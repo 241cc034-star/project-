@@ -1,22 +1,93 @@
+
 {% extends 'portal/base.html' %}
 
+{% block title %}Login - Research Paper Portal{% endblock %}
+
 {% block content %}
-<h2>Student / Reviewer Login</h2>
 
-{% if error %}
-<p>{{ error }}</p>
-{% endif %}
+<style>
+.login-container {
+    max-width: 420px;
+    margin: 40px auto;
+    padding: 30px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
 
-<form method="POST">
-    {% csrf_token %}
-    <label>Username:</label>
-    <input type="text" name="username" required><br><br>
+.login-container h2 {
+    text-align: center;
+    margin-bottom: 25px;
+    color: #102a56;
+}
 
-    <label>Password:</label>
-    <input type="password" name="password" required><br><br>
+.login-container label {
+    display: block;
+    margin: 15px 0 8px;
+    font-weight: bold;
+}
 
-    <button type="submit">Login</button>
-</form>
+.login-container input {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    margin-bottom: 15px;
+}
 
-<a href="{% url 'register' %}">Create Account</a>
+.login-container button {
+    width: 100%;
+    padding: 12px;
+    background: #102a56;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.login-container button:hover {
+    background: #1d4ed8;
+}
+
+.login-container p {
+    text-align: center;
+    margin-top: 20px;
+}
+</style>
+
+<div class="login-container">
+
+    <h2>Student / Reviewer Login</h2>
+
+    {% if form.errors %}
+        <p style="color:red;">Invalid username or password.</p>
+    {% endif %}
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <label for="id_username">Username</label>
+        <input type="text" name="username"
+               id="id_username" required>
+
+        <label for="id_password">Password</label>
+        <input type="password" name="password"
+               id="id_password" required>
+
+        {% if next %}
+            <input type="hidden" name="next" value="{{ next }}">
+        {% endif %}
+
+        <button type="submit">Login</button>
+    </form>
+
+    <p>
+        Don't have an account?
+        <a href="{% url 'register' %}">Create Account</a>
+    </p>
+
+</div>
+
 {% endblock %}

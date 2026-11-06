@@ -1,31 +1,195 @@
-{% extends 'portal/base.html' %}
 
-{% block content %}
-<h2>Student Dashboard</h2>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
 
-<p>Welcome, {{ request.user.username }}!</p>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
 
-<a href="{% url 'upload' %}">Upload Research Paper</a>
+        body {
+            margin: 0;
+            background: #f1f5f9;
+            color: #1e293b;
+        }
 
-<h3>My Research Papers</h3>
+        header {
+            background: #102a56;
+            color: white;
+            padding: 20px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
 
-{% for paper in papers %}
-    <p>
-        {{ paper.title }} -
-        <a href="{{ paper.file.url }}">View Paper</a>
-    </p>
+        header a {
+            color: white;
+            text-decoration: none;
+            margin-left: 15px;
+        }
 
-    {% for review in paper.review_set.all %}
-        <p>Reviewer Feedback: {{ review.feedback }}</p>
-    {% empty %}
-        <p>Feedback not received yet.</p>
-    {% endfor %}
-{% empty %}
-    <p>No papers uploaded yet.</p>
-{% endfor %}
+        .container {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 20px;
+        }
 
-<form method="POST" action="{% url 'logout' %}">
-    {% csrf_token %}
-    <button type="submit">Logout</button>
-</form>
-{% endblock %}
+        .welcome {
+            margin-bottom: 25px;
+        }
+
+        .welcome h1 {
+            color: #102a56;
+        }
+
+        .upload-btn {
+            display: inline-block;
+            background: #2563eb;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            margin-bottom: 25px;
+        }
+
+        .table-box {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 14px;
+            border-bottom: 1px solid #e2e8f0;
+            text-align: left;
+        }
+
+        th {
+            background: #e8eff9;
+        }
+
+        .status {
+            font-weight: bold;
+        }
+
+        .pending { color: #d97706; }
+        .approved { color: #16a34a; }
+        .rejected { color: #dc2626; }
+
+        .empty {
+            text-align: center;
+            padding: 30px;
+            color: #64748b;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #64748b;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h2>📚 Research Portal</h2>
+
+    <nav>
+        <a href="{% url 'home' %}">Home</a>
+        <a href="{% url 'upload' %}">Upload Paper</a>
+        <a href="{% url 'logout' %}">Logout</a>
+    </nav>
+</header>
+
+<div class="container">
+
+    <div class="welcome">
+        <h1>Welcome, {{ request.user.username }}!</h1>
+        <p>Manage your research papers and review progress.</p>
+    </div>
+
+    <a href="{% url 'upload' %}" class="upload-btn">
+        + Upload New Research Paper
+    </a>
+
+    <div class="table-box">
+        <h2>My Research Papers</h2>
+
+        {% if papers %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Paper Title</th>
+                    <th>Uploaded Date</th>
+                    <th>Status</th>
+                    <th>Reviewer Feedback</th>
+                    <th>PDF</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for paper in papers %}
+                <tr>
+                    <td>{{ paper.title }}</td>
+
+                    <td>{{ paper.uploaded_at|date:"d-m-Y" }}</td>
+
+                    <td>
+                        <span class="status
+                        {% if paper.status == 'Approved' %}approved
+                        {% elif paper.status == 'Rejected' %}rejected
+                        {% else %}pending{% endif %}">
+                            {{ paper.status }}
+                        </span>
+                    </td>
+
+                    <td>
+                        {% if paper.reviewer_feedback %}
+                            {{ paper.reviewer_feedback }}
+                        {% else %}
+                            Not reviewed yet
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        {% if paper.paper_file %}
+                            <a href="{{ paper.paper_file.url }}" target="_blank">
+                                View PDF
+                            </a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        {% else %}
+        <div class="empty">
+            <h3>No Research Papers Uploaded</h3>
+            <p>Upload your first research paper to get started.</p>
+        </div>
+        {% endif %}
+
+    </div>
+</div>
+
+<footer>
+    © 2026 Research Paper Review Portal
+</footer>
+
+</body>
+</html>
