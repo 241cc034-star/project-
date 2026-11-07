@@ -1,0 +1,30 @@
+
+{% extends 'portal/base.html' %}
+
+{% block content %}
+
+<h2>Activate Reviewer Account</h2>
+
+<p>
+    Click below to enable reviewer access for your arun account.
+</p>
+
+<form method="POST">
+    {% csrf_token %}
+
+    <label for="token">Security Token:</label>
+
+    <input
+        type="password"
+        id="token"
+        name="token"
+        placeholder="Enter your security token"
+        required
+    >
+
+    <button type="submit">
+        Activate Reviewer Access
+    </button>
+</form>
+
+{% endblock %}
